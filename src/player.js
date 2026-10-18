@@ -125,7 +125,7 @@ export class Player {
   }
 
   look(dx, dy, sens) {
-    if (this.frozen) return;
+    if (this.frozen || !Number.isFinite(dx) || !Number.isFinite(dy) || !Number.isFinite(sens) || sens <= 0) return;
     if (this.hidden) {
       // inside a locker you can only lean your eye to the slits
       this.yaw = THREE.MathUtils.clamp(this.yaw - dx * sens, this.hideYaw - 0.45, this.hideYaw + 0.45);
@@ -402,7 +402,8 @@ export class Player {
       this.camera.quaternion.slerp(q, Math.min(1, dt * 10));
     } else {
       const viewPitch = MU.lerp(this.pitch + swayP + this.runPitch, -1.25, this.fallK);
-      this.camera.rotation.set(this.fallT > 0 ? MU.clamp(viewPitch, -1.48, 1.45) : viewPitch, this.yaw + swayY, this.roll + this.fallSide * this.fallK * 0.12, 'YXZ');
+      // Gait and impact offsets must never tip the view past the vertical axis.
+      this.camera.rotation.set(MU.clamp(viewPitch, -1.48, 1.45), this.yaw + swayY, this.roll + this.fallSide * this.fallK * 0.12, 'YXZ');
     }
 
     this.updateProjectiles(dt);

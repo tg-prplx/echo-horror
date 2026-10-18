@@ -24,6 +24,7 @@ import { RoomVisibility } from './room-visibility.js';
 import { createTouchControls } from './touch-controls.js';
 import { CaveLevel } from './cave-level.js';
 import { CaveChapter } from './cave-chapter.js';
+import { MouseLook } from './mouse-look.js';
 import { LIFT_OFFSET } from './lift-asset.js';
 
 const $ = (id) => document.getElementById(id);
@@ -479,7 +480,7 @@ level.onShutter = (d, closed) => {
 // ------------------------------------------------------------------ input
 let sens = +$('sens').value;
 let pointerLocked = false;
-let dragLook = false;
+const mouseLook = new MouseLook((dx,dy,sensitivity)=>player.look(dx,dy,sensitivity));
 const canvas = renderer.domElement;
 
 addEventListener('keydown', (e) => {
@@ -513,14 +514,15 @@ addEventListener('keydown', (e) => {
   } else if (game.state === 'note' && (e.code === 'KeyE' || e.code === 'Escape')) closeNote();
 });
 addEventListener('keyup', (e) => player.keys.delete(e.code));
-addEventListener('blur', () => player.keys.clear());
+addEventListener('blur', () => {player.keys.clear();mouseLook.reset();});
+document.addEventListener('visibilitychange', () => {if(document.hidden)mouseLook.reset();});
 
 canvas.addEventListener('mousedown', (e) => {
   if (game.state !== 'play' && game.state !== 'note') return;
   if (player.fallT > 0) return;
   if (!pointerLocked) {
+    mouseLook.beginDrag(e.clientX,e.clientY);
     lock();
-    dragLook = true;
   }
   if (e.button === 0 && game.state === 'play' && pointerLocked && !vm.work) {
     if (player.stones > 0 && !player.frozen) vm.throw();
@@ -530,15 +532,16 @@ canvas.addEventListener('mousedown', (e) => {
 });
 addEventListener('mouseup', (e) => {
   if (e.button === 2) player.keys.delete('Mouse2');
-  dragLook = false;
+  mouseLook.endDrag();
 });
 addEventListener('contextmenu', (e) => e.preventDefault());
 addEventListener('mousemove', (e) => {
   if (game.state !== 'play' && game.state !== 'note') return;
-  if (pointerLocked || dragLook) player.look(e.movementX, e.movementY, 0.0012 * sens);
+  mouseLook.move(e,0.0012*sens);
 });
 document.addEventListener('pointerlockchange', () => {
   pointerLocked = document.pointerLockElement === canvas;
+  mouseLook.setLocked(pointerLocked);
   if (!pointerLocked && (game.state === 'play' || game.state === 'note')) pause();
 });
 
@@ -1365,7 +1368,7 @@ function pause() {
   if (game.state !== 'play') return;
   game.state = 'paused';
   player.keys.clear();
-  dragLook = false;
+  mouseLook.reset();
   $('pause').classList.remove('hidden');
   $('resume').focus();
   if (document.pointerLockElement) document.exitPointerLock();
