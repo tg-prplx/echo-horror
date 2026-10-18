@@ -1,0 +1,31 @@
+{
+  "license": "CC0-1.0",
+  "generator": "tools/generate-cave-materials.py",
+  "resolution": 512,
+  "materials": [
+    "basalt",
+    "limestone",
+    "shale",
+    "calcite",
+    "wetrock",
+    "flowstone",
+    "breccia",
+    "salt",
+    "clay",
+    "silt",
+    "gravel",
+    "algae",
+    "ceramic",
+    "ochretile",
+    "porcelain",
+    "copper",
+    "corroded",
+    "enamel",
+    "mesh",
+    "cable",
+    "gauze",
+    "canvas",
+    "sediment",
+    "fossil"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "license": "CC0-1.0",
+  "generator": "tools/generate-detail-materials.py",
+  "resolution": 512,
+  "materials": [
+    "terrazzo",
+    "linoleum",
+    "blue-tile",
+    "peeled-ivory",
+    "red-brick",
+    "coal",
+    "salt-vein",
+    "green-enamel",
+    "zinc",
+    "hazard",
+    "burlap",
+    "timber-sawn"
+  ]
+}
