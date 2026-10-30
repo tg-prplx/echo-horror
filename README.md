@@ -90,7 +90,7 @@
 резонатора; «Продолжить» и повтор после смерти возвращают в нужную главу.
 Пауза останавливает спуск, работу руками и все игровые таймеры.
 
-Проверки: `node --test tests/*.test.js`; сборка: `npm run build`.
+Проверки: `npm test`; сборка: `npm run build`. На каждый PR и пуш в `main` их запускает GitHub Actions (`.github/workflows/ci.yml`).
 Браузерная проверка: запустить `npm run build` и `npm run preview -- --port 4173`,
 затем `node tools/verify-cave.cjs` (Playwright и установленный Chrome;
 `PLAYWRIGHT_MODULE` позволяет указать путь к Playwright).
